@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Word of the Day AI Agent</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      padding: 40px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #3b5998;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin-right: 10px;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #3b5998;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2d4373;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+    .label {
+      font-weight: bold;
+      margin-top: 12px;
+      color: #444;
+    }
+    .value {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📚 Word of the Day AI Agent</h1>
+  <div>
+    <input type="text" id="wordInput" placeholder="Enter a word (or leave blank for today's word)">
+    <button onclick="fetchWord()">🔍 Get Word</button>
+  </div>
+
+  <div class="card" id="wordInfo" style="display: none;">
+    <div class="label">📝 Word:</div>
+    <div class="value" id="wordText"></div>
+
+    <div class="label">📖 Meaning:</div>
+    <div class="value" id="meaningText"></div>
+
+    <div class="label">✍️ Example:</div>
+    <div class="value" id="exampleText"></div>
+
+    <div class="label">🧠 LLaMA Explains:</div>
+    <div class="value" id="llamaExplain"></div>
+  </div>
+
+  <script>
+    async function fetchWord() {
+      const word = document.getElementById("wordInput").value || "quintessential"; // fallback
+      const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+      const wordCard = document.getElementById("wordInfo");
+
+      if (!response.ok) {
+        alert("Word not found.");
+        wordCard.style.display = "none";
+        return;
+      }
+
+      const data = await response.json();
+      const meaning = data[0].meanings[0].definitions[0].definition;
+      const example = data[0].meanings[0].definitions[0].example || "Example not available.";
+
+      // Inject into UI
+      document.getElementById("wordText").textContent = word;
+      document.getElementById("meaningText").textContent = meaning;
+      document.getElementById("exampleText").textContent = example;
+      document.getElementById("llamaExplain").textContent =
+        `Imagine your favorite thing being the ultimate version of itself—that's what "${word}" means! Just like a superhero version of a word!`;
+
+      wordCard.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
